@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos Numéricos Aplicados</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .tema {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .tema h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .teoria {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .teoria h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+        
+        .ejercicio {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #ffa726;
+        }
+        
+        .ejercicio h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .resultado {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+        
+        .resultado h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        
+        .resultado-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .grafico {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        canvas {
+            max-width: 100%;
+        }
+        
+        .formula {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .iteraciones-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        
+        .iteraciones-table th,
+        .iteraciones-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .iteraciones-table th {
+            background: #667eea;
+            color: white;
+        }
+        
+        .iteraciones-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PROYECTO FINAL Métodos Numéricos </h1>
+            <p>Estudiante: Samuel Fernandez Alarcon</p>
+        </header>
+
+        <div class="tema">
+            <h2>1. Método de Newton-Raphson para Raíces de Ecuaciones</h2>
+            
+            <div class="teoria">
+                <h3>📚 Teoría</h3>
+                <p>El método de Newton-Raphson es un algoritmo iterativo para encontrar raíces de funciones. Se basa en aproximaciones lineales sucesivas mediante la tangente a la curva.</p>
+                <div class="formula">
+                    x(n+1) = x(n) - f(x(n)) / f'(x(n))
+                </div>
+                <p><strong>Aplicación:</strong> Resolver ecuaciones no lineales en diseño de circuitos, cálculo de flujos, optimización de procesos, etc.</p>
+            </div>
+
+            <div class="ejercicio">
+                <h3>🔧 Ejercicio: Diseño de un Circuito Eléctrico con Diodo</h3>
+                <p>En un circuito con un diodo, la corriente I (en mA) satisface la ecuación trascendental:</p>
+                <div class="formula">
+                    V_s - I·R - V_t·ln(I/I_s + 1) = 0
+                </div>
+                <p>Donde V_s es el voltaje de fuente, R es la resistencia, V_t es el voltaje térmico (≈26 mV), e I_s es la corriente de saturación.</p>
+                
+                <div class="input-group">
+                    <label>Voltaje de fuente V_s (V):</label>
+                    <input type="number" id="vs" value="5" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R (Ω):</label>
+                    <input type="number" id="r" value="1000" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Corriente de saturación I_s (μA):</label>
+                    <input type="number" id="is" value="1" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Estimación inicial I_0 (mA):</label>
+                    <input type="number" id="i0" value="3" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Tolerancia:</label>
+                    <input type="number" id="tol1" value="0.0001" step="0.0001">
+                </div>
+                
+                <button onclick="resolverNewton()">Calcular Corriente</button>
+                
+                <div class="resultado" id="resultado1">
+                    <h4>📊 Resultados</h4>
+                    <div id="resultados-newton"></div>
+                    <table class="iteraciones-table" id="tabla-newton"></table>
+                    <div class="grafico">
+                        <canvas id="grafico1"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tema">
+            <h2>2. Eliminación de Gauss para Sistemas de Ecuaciones Lineales</h2>
+            
+            <div class="teoria">
+                <h3>📚 Teoría</h3>
+                <p>La eliminación de Gauss es un método para resolver sistemas de ecuaciones lineales mediante transformaciones elementales que convierten la matriz en forma triangular superior.</p>
+                <div class="formula">
+                    Ax = b → [A|b] → [U|c] → x mediante sustitución regresiva
+                </div>
+                <p><strong>Aplicación:</strong> Análisis de circuitos, estructuras, sistemas de reactores químicos, redes de distribución.</p>
+            </div>
+
+            <div class="ejercicio">
+                <h3>🔧 Ejercicio: Análisis de Corrientes en un Circuito con Múltiples Mallas</h3>
+                <p>Un circuito eléctrico con 3 mallas genera el siguiente sistema usando las leyes de Kirchhoff:</p>
+                <div class="formula">
+                    R1·I1 + R4·(I1-I2) = V1<br>
+                    R2·I2 + R4·(I2-I1) + R5·(I2-I3) = 0<br>
+                    R3·I3 + R5·(I3-I2) = -V2
+                </div>
+                
+                <div class="input-group">
+                    <label>Resistencia R1 (Ω):</label>
+                    <input type="number" id="r1" value="10" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R2 (Ω):</label>
+                    <input type="number" id="r2" value="20" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R3 (Ω):</label>
+                    <input type="number" id="r3" value="15" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R4 (Ω) [compartida entre mallas 1-2]:</label>
+                    <input type="number" id="r4" value="5" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R5 (Ω) [compartida entre mallas 2-3]:</label>
+                    <input type="number" id="r5" value="8" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Voltaje V1 (V):</label>
+                    <input type="number" id="v1" value="12" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Voltaje V2 (V):</label>
+                    <input type="number" id="v2" value="6" step="1">
+                </div>
+                
+                <button onclick="resolverGauss()">Calcular Corrientes</button>
+                
+                <div class="resultado" id="resultado2">
+                    <h4>📊 Resultados</h4>
+                    <div id="resultados-gauss"></div>
+                    <div class="grafico">
+                        <canvas id="grafico2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tema">
+            <h2>3. Método de Euler para Ecuaciones Diferenciales Ordinarias</h2>
+            
+            <div class="teoria">
+                <h3>📚 Teoría</h3>
+                <p>El método de Euler es el más simple para resolver ecuaciones diferenciales ordinarias numéricamente. Aproxima la solución mediante pasos discretos usando la derivada.</p>
+                <div class="formula">
+                    y(n+1) = y(n) + h · f(t(n), y(n))
+                </div>
+                <p>Donde h es el tamaño de paso y f es la derivada dy/dt.</p>
+                <p><strong>Aplicación:</strong> Dinámica de poblaciones, circuitos RC, enfriamiento de cuerpos, cinética química.</p>
+            </div>
+
+            <div class="ejercicio">
+                <h3>🔧 Ejercicio: Descarga de un Capacitor en un Circuito RC</h3>
+                <p>Un capacitor se descarga a través de una resistencia. El voltaje V(t) satisface:</p>
+                <div class="formula">
+                    dV/dt = -V/(R·C)
+                </div>
+                <p>Con condición inicial V(0) = V₀</p>
+                
+                <div class="input-group">
+                    <label>Voltaje inicial V₀ (V):</label>
+                    <input type="number" id="v0" value="10" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Resistencia R (kΩ):</label>
+                    <input type="number" id="r_euler" value="10" step="1">
+                </div>
+                <div class="input-group">
+                    <label>Capacitancia C (μF):</label>
+                    <input type="number" id="c" value="100" step="10">
+                </div>
+                <div class="input-group">
+                    <label>Tiempo final (segundos):</label>
+                    <input type="number" id="tf" value="5" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>Tamaño de paso h (segundos):</label>
+                    <input type="number" id="h" value="0.1" step="0.01">
+                </div>
+                
+                <button onclick="resolverEuler()">Simular Descarga</button>
+                
+                <div class="resultado" id="resultado3">
+                    <h4>📊 Resultados</h4>
+                    <div id="resultados-euler"></div>
+                    <div class="grafico">
+                        <canvas id="grafico3"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para los gráficos
+        let chart1, chart2, chart3;
+
+        // MÉTODO DE NEWTON-RAPHSON
+        function resolverNewton() {
+            const Vs = parseFloat(document.getElementById('vs').value);
+            const R = parseFloat(document.getElementById('r').value);
+            const Is = parseFloat(document.getElementById('is').value) * 1e-3; // Convertir μA a mA
+            const I0 = parseFloat(document.getElementById('i0').value);
+            const tol = parseFloat(document.getElementById('tol1').value);
+            const Vt = 0.026; // Voltaje térmico en V
+            
+            let I = I0;
+            let iteraciones = [];
+            let maxIter = 50;
+            
+            // Función f(I) = Vs - I*R - Vt*ln(I/Is + 1)
+            // Nota: R está en Ohms, I en mA. Para que las unidades cuadren (Voltios):
+            // Vs (V) - (I*1e-3 A * R Ohm) - Vt * ln...
+            // Simplificamos usando mA para I y kOhm implícitos o convirtiendo:
+            const f = (i) => Vs - i * R / 1000 - Vt * Math.log(i / Is + 1);
+            
+            // Derivada f'(I) = -R/1000 - Vt/(i + Is) * (1)
+            const df = (i) => -R / 1000 - Vt / (i + Is);
+            
+            for (let iter = 0; iter < maxIter; iter++) {
+                const fI = f(I);
+                const dfI = df(I);
+                const I_new = I - fI / dfI;
+                
+                iteraciones.push({
+                    iter: iter + 1,
+                    I: I,
+                    fI: fI,
+                    error: Math.abs(I_new - I)
+                });
+                
+                if (Math.abs(I_new - I) < tol) {
+                    I = I_new;
+                    break;
+                }
+                
+                I = I_new;
+            }
+            
+            // Mostrar resultados
+            const resultado = document.getElementById('resultado1');
+            resultado.style.display = 'block';
+            
+            const voltajeDiodo = Vt * Math.log(I / Is + 1);
+            const potencia = I * (Vs - voltajeDiodo);
+            
+            document.getElementById('resultados-newton').innerHTML = `
+                <div class="resultado-item">
+                    <strong>Corriente del circuito:</strong> ${I.toFixed(4)} mA
+                </div>
+                <div class="resultado-item">
+                    <strong>Voltaje en el diodo:</strong> ${voltajeDiodo.toFixed(4)} V
+                </div>
+                <div class="resultado-item">
+                    <strong>Voltaje en la resistencia:</strong> ${(I * R / 1000).toFixed(4)} V
+                </div>
+                <div class="resultado-item">
+                    <strong>Potencia disipada:</strong> ${potencia.toFixed(4)} mW
+                </div>
+                <div class="resultado-item">
+                    <strong>Iteraciones:</strong> ${iteraciones.length}
+                </div>
+                <div class="resultado-item">
+                    <p><strong>Interpretación:</strong> La corriente calculada representa el punto de operación del circuito donde se equilibran las caídas de voltaje según la ley de Kirchhoff.</p>
+                </div>
+            `;
+            
+            // Tabla de iteraciones
+            let tablaHTML = `
+                <thead>
+                    <tr>
+                        <th>Iteración</th>
+                        <th>I (mA)</th>
+                        <th>f(I)</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            
+            iteraciones.forEach(item => {
+                tablaHTML += `
+                    <tr>
+                        <td>${item.iter}</td>
+                        <td>${item.I.toFixed(6)}</td>
+                        <td>${item.fI.toFixed(6)}</td>
+                        <td>${item.error.toFixed(6)}</td>
+                    </tr>
+                `;
+            });
+            
+            tablaHTML += '</tbody>';
+            document.getElementById('tabla-newton').innerHTML = tablaHTML;
+            
+            // Gráfico de convergencia
+            if (chart1) chart1.destroy();
+            
+            const ctx = document.getElementById('grafico1').getContext('2d');
+            chart1 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iteraciones.map(item => item.iter),
+                    datasets: [{
+                        label: 'Corriente I (mA)',
+                        data: iteraciones.map(item => item.I),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Error Absoluto',
+                        data: iteraciones.map(item => item.error),
+                        borderColor: '#f57c00',
+                        backgroundColor: 'rgba(245, 124, 0, 0.1)',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Corriente (mA)'
+                            }
+                        },
+                        y1: {
+                            type: 'logarithmic',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Error'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Convergencia del Método de Newton-Raphson'
+                        }
+                    }
+                }
+            });
+        }
+
+        // ELIMINACIÓN DE GAUSS
+        function resolverGauss() {
+            const R1 = parseFloat(document.getElementById('r1').value);
+            const R2 = parseFloat(document.getElementById('r2').value);
+            const R3 = parseFloat(document.getElementById('r3').value);
+            const R4 = parseFloat(document.getElementById('r4').value);
+            const R5 = parseFloat(document.getElementById('r5').value);
+            const V1 = parseFloat(document.getElementById('v1').value);
+            const V2 = parseFloat(document.getElementById('v2').value);
+            
+            // Construir sistema de ecuaciones
+            let A = [
+                [R1 + R4, -R4, 0],
+                [-R4, R2 + R4 + R5, -R5],
+                [0, -R5, R3 + R5]
+            ];
+            
+            let b = [V1, 0, -V2];
+            
+            // Eliminación hacia adelante
+            const n = 3;
+            for (let k = 0; k < n - 1; k++) {
+                for (let i = k + 1; i < n; i++) {
+                    const factor = A[i][k] / A[k][k];
+                    for (let j = k; j < n; j++) {
+                        A[i][j] -= factor * A[k][j];
+                    }
+                    b[i] -= factor * b[k];
+                }
+            }
+            
+            // Sustitución regresiva
+            let x = new Array(n);
+            for (let i = n - 1; i >= 0; i--) {
+                let suma = 0;
+                for (let j = i + 1; j < n; j++) {
+                    suma += A[i][j] * x[j];
+                }
+                x[i] = (b[i] - suma) / A[i][i];
+            }
+            
+            const I1 = x[0];
+            const I2 = x[1];
+            const I3 = x[2];
+            
+            // Calcular potencias
+            const Ptotal = I1*I1*R1 + I2*I2*R2 + I3*I3*R3 + (I1-I2)**2*R4 + (I2-I3)**2*R5;
+            
+            // Mostrar resultados
+            const resultado = document.getElementById('resultado2');
+            resultado.style.display = 'block';
+            
+            document.getElementById('resultados-gauss').innerHTML = `
+                <div class="resultado-item">
+                    <strong>Corriente en malla 1 (I₁):</strong> ${I1.toFixed(4)} A
+                </div>
+                <div class="resultado-item">
+                    <strong>Corriente en malla 2 (I₂):</strong> ${I2.toFixed(4)} A
+                </div>
+                <div class="resultado-item">
+                    <strong>Corriente en malla 3 (I₃):</strong> ${I3.toFixed(4)} A
+                </div>
+                <div class="resultado-item">
+                    <strong>Corriente en R4 (I₁-I₂):</strong> ${(I1 - I2).toFixed(4)} A
+                </div>
+                <div class="resultado-item">
+                    <strong>Corriente en R5 (I₂-I₃):</strong> ${(I2 - I3).toFixed(4)} A
+                </div>
+                <div class="resultado-item">
+                    <strong>Potencia total disipada:</strong> ${Ptotal.toFixed(4)} W
+                </div>
+                <div class="resultado-item">
+                    <p><strong>Interpretación:</strong> El método de Gauss proporciona una solución exacta al sistema lineal de mallas de Kirchhoff.</p>
+                </div>
+            `;
+            
+            // Gráfico de barras
+            if (chart2) chart2.destroy();
+            
+            const ctx = document.getElementById('grafico2').getContext('2d');
+            chart2 = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['I₁', 'I₂', 'I₃', 'I(R4)', 'I(R5)'],
+                    datasets: [{
+                        label: 'Corrientes (A)',
+                        data: [I1, I2, I3, I1 - I2, I2 - I3],
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.7)',
+                            'rgba(118, 75, 162, 0.7)',
+                            'rgba(245, 124, 0, 0.7)',
+                            'rgba(76, 175, 80, 0.7)',
+                            'rgba(233, 30, 99, 0.7)'
+                        ],
+                        borderColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#f57c00',
+                            '#4caf50',
+                            '#e91e63'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Distribución de Corrientes en el Circuito'
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Corriente (A)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // MÉTODO DE EULER (Completado)
+        function resolverEuler() {
+            const V0 = parseFloat(document.getElementById('v0').value);
+            const R = parseFloat(document.getElementById('r_euler').value) * 1000; // kΩ a Ω
+            const C = parseFloat(document.getElementById('c').value) * 1e-6; // μF a F
+            const tf = parseFloat(document.getElementById('tf').value);
+            const h = parseFloat(document.getElementById('h').value);
+            
+            const tau = R * C; // Constante de tiempo
+            
+            // Función derivada dV/dt = -V/(R*C)
+            const f = (t, V) => -V / tau;
+            
+            // Solución analítica para comparación
+            const solucionExacta = (t) => V0 * Math.exp(-t / tau);
+            
+            let t = 0;
+            let V = V0;
+            let datos = [{t: 0, V: V0, exacta: V0}];
+            
+            // Método de Euler
+            while (t < tf) {
+                V = V + h * f(t, V);
+                t = t + h;
+                datos.push({
+                    t: t,
+                    V: V,
+                    exacta: solucionExacta(t)
+                });
+            }
+            
+            // Voltaje final
+            const Vfinal = datos[datos.length - 1].V;
+            const VfinalExacta = solucionExacta(tf);
+            const errorFinal = Math.abs(Vfinal - VfinalExacta);
+            
+            // Mostrar resultados
+            const resultado = document.getElementById('resultado3');
+            resultado.style.display = 'block';
+            
+            document.getElementById('resultados-euler').innerHTML = `
+                <div class="resultado-item">
+                    <strong>Constante de tiempo (τ):</strong> ${tau.toFixed(4)} segundos
+                </div>
+                <div class="resultado-item">
+                    <strong>Voltaje final (simulado):</strong> ${Vfinal.toFixed(4)} V
+                </div>
+                <div class="resultado-item">
+                    <strong>Voltaje final (exacto):</strong> ${VfinalExacta.toFixed(4)} V
+                </div>
+                <div class="resultado-item">
+                    <strong>Error absoluto final:</strong> ${errorFinal.toFixed(6)} V
+                </div>
+                <div class="resultado-item">
+                    <p><strong>Interpretación:</strong> El método de Euler aproxima la curva de descarga. La discrepancia entre la línea sólida (numérica) y la punteada (exacta) se debe al error de truncamiento del método de primer orden. Disminuir el paso 'h' reduce este error.</p>
+                </div>
+            `;
+
+            // Gráfico de Euler
+            if (chart3) chart3.destroy();
+
+            const ctx = document.getElementById('grafico3').getContext('2d');
+            chart3 = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: datos.map(d => d.t.toFixed(2)),
+                    datasets: [
+                        {
+                            label: 'Euler (Numérico)',
+                            data: datos.map(d => d.V),
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 2,
+                            pointRadius: 2,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Analítico (Exacto)',
+                            data: datos.map(d => d.exacta),
+                            borderColor: '#f57c00',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparación: Euler vs Solución Exacta'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Tiempo (s)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Voltaje (V)' }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
